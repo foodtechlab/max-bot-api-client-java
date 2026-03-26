@@ -280,9 +280,15 @@
     </build>
 
     <distributionManagement>
+        <repository>
+            <id>backend-libraries</id>
+            <name>Backend Libraries Repository</name>
+            <url>https://nexus.foodtech-lab.ru/repository/backend-libraries/</url>
+        </repository>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>backend-libraries</id>
+            <name>Backend Libraries Repository</name>
+            <url>https://nexus.foodtech-lab.ru/repository/backend-libraries/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
