@@ -10,8 +10,10 @@ import org.junit.experimental.categories.Category;
 import ru.max.botapi.UnitTest;
 import ru.max.botapi.exceptions.SerializationException;
 import ru.max.botapi.model.MessageBody;
+import ru.max.botapi.model.SendMessageResult;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -81,6 +83,26 @@ public class JacksonSerializerTest {
         byte[] serialized = serializer.serialize(object);
         MessageBody deserialized = serializer.deserialize(new ByteArrayInputStream(serialized), MessageBody.class);
         assertThat(deserialized, is(object));
+    }
+
+    @Test
+    public void shouldDeserializeSendMessageResponseWithNestedMessageBody() throws Exception {
+        String payload = "{\"message\":{\"recipient\":{\"chat_id\":146034524,\"chat_type\":\"dialog\",\"user_id\":103604639},"
+                + "\"timestamp\":1776275450264,"
+                + "\"sender\":{\"user_id\":244887235,\"first_name\":\"Test bot\",\"username\":\"id3444197280_bot\",\"is_bot\":true,"
+                + "\"last_activity_time\":1776275450276,\"name\":\"Test bot\"},"
+                + "\"message\":{\"mid\":\"mid.0000000008b44f5c019d924469981adc\",\"seq\":116409987908508380,"
+                + "\"text\":\"MAX raw test\"}},"
+                + "\"chat_id\":146034524,"
+                + "\"recipient_id\":146034524,"
+                + "\"message_id\":\"mid.0000000008b44f5c019d924469981adc\"}";
+
+        SendMessageResult deserialized = serializer.deserialize(payload, SendMessageResult.class);
+
+        assertThat(deserialized, is(notNullValue()));
+        assertThat(deserialized.getMessage(), is(notNullValue()));
+        assertThat(deserialized.getMessage().getBody(), is(notNullValue()));
+        assertThat(deserialized.getMessage().getBody().getMid(), is("mid.0000000008b44f5c019d924469981adc"));
     }
 
     private static class NotSerializableClass {

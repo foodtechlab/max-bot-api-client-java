@@ -28,7 +28,7 @@ To start using this client add it as Maven dependency:
 <dependency>
     <groupId>ru.max</groupId>
     <artifactId>max-bot-api</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
 </dependency>
 ```
 
