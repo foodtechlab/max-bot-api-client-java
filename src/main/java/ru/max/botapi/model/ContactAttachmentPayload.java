@@ -20,6 +20,7 @@
 
 package ru.max.botapi.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import javax.validation.Valid;
@@ -51,6 +52,8 @@ public class ContactAttachmentPayload implements MaxSerializable {
         return vcfInfo;
     }
 
+    @JsonProperty("vcf_info")
+    @JsonAlias({"vcfInfo"})
     public void setVcfInfo(@Nullable String vcfInfo) {
         this.vcfInfo = vcfInfo;
     }
@@ -70,6 +73,8 @@ public class ContactAttachmentPayload implements MaxSerializable {
         return maxInfo;
     }
 
+    @JsonProperty("max_info")
+    @JsonAlias({"maxInfo", "tamInfo"})
     public void setMaxInfo(@Nullable User maxInfo) {
         this.maxInfo = maxInfo;
     }

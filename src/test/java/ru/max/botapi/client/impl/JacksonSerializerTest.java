@@ -9,7 +9,9 @@ import org.junit.experimental.categories.Category;
 
 import ru.max.botapi.UnitTest;
 import ru.max.botapi.exceptions.SerializationException;
+import ru.max.botapi.model.ContactAttachment;
 import ru.max.botapi.model.MessageBody;
+import ru.max.botapi.model.MessageCreatedUpdate;
 import ru.max.botapi.model.SendMessageResult;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -103,6 +105,32 @@ public class JacksonSerializerTest {
         assertThat(deserialized.getMessage(), is(notNullValue()));
         assertThat(deserialized.getMessage().getBody(), is(notNullValue()));
         assertThat(deserialized.getMessage().getBody().getMid(), is("mid.0000000008b44f5c019d924469981adc"));
+    }
+
+    @Test
+    public void shouldDeserializeContactAttachmentWithCamelCasePayload() throws Exception {
+        String payload = "{\"message\":{\"recipient\":{\"chat_id\":146034524,\"chat_type\":\"dialog\",\"user_id\":244887235},"
+                + "\"timestamp\":1776437688132,"
+                + "\"body\":{\"mid\":\"mid.0000000008b44f5c019d9beff7444763\",\"seq\":116420620329437027,\"text\":\"\","
+                + "\"attachments\":[{\"payload\":{\"vcfInfo\":\"BEGIN:VCARD\\r\\nVERSION:3.0\\r\\nPRODID:ez-vcard 0.10.3\\r\\nTEL;TYPE=cell:79044020167\\r\\nFN:Никита Тарасов\\r\\nEND:VCARD\\r\\n\","
+                + "\"tamInfo\":{\"user_id\":103604639,\"first_name\":\"Никита\",\"last_name\":\"Тарасов\",\"is_bot\":false,"
+                + "\"last_activity_time\":1776437779000,\"name\":\"Никита Тарасов\"}},\"type\":\"contact\"}]},"
+                + "\"sender\":{\"user_id\":103604639,\"first_name\":\"Никита\",\"last_name\":\"Тарасов\",\"is_bot\":false,"
+                + "\"last_activity_time\":1776437779000,\"name\":\"Никита Тарасов\"}},"
+                + "\"timestamp\":1776437688132,\"user_locale\":\"ru\",\"update_type\":\"message_created\"}";
+
+        MessageCreatedUpdate deserialized = serializer.deserialize(payload, MessageCreatedUpdate.class);
+
+        assertThat(deserialized, is(notNullValue()));
+        assertThat(deserialized.getMessage(), is(notNullValue()));
+        assertThat(deserialized.getMessage().getBody(), is(notNullValue()));
+        assertThat(deserialized.getMessage().getBody().getAttachments(), is(notNullValue()));
+        assertThat(deserialized.getMessage().getBody().getAttachments().size(), is(1));
+        ContactAttachment attachment = (ContactAttachment) deserialized.getMessage().getBody().getAttachments().get(0);
+        assertThat(attachment.getPayload(), is(notNullValue()));
+        assertThat(attachment.getPayload().getVcfInfo(), is(notNullValue()));
+        assertThat(attachment.getPayload().getMaxInfo(), is(notNullValue()));
+        assertThat(attachment.getPayload().getMaxInfo().getUserId(), is(103604639L));
     }
 
     private static class NotSerializableClass {
